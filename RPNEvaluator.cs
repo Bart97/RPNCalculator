@@ -19,15 +19,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace RPNCalculator
 {
+    public delegate void Function(Stack<double> stack);
+    public interface IPlugin
+    {
+        void LoadFunctions(Dictionary<String, Function> dictionary);
+    }
     static class RPNEvaluator
     {
-        private delegate void Function(Stack<double> stack);
-
         private static Dictionary<String, Function> functions = ListFunctions();
 
         public static void Evaluate(String expression, Stack<double> stack)
@@ -89,6 +93,48 @@ namespace RPNCalculator
             dict.Add("dup", new Function(dup));
             dict.Add("swap", new Function(swap));
             dict.Add("pop", new Function(pop));
+
+            foreach (string path in System.IO.Directory.GetFiles("./plugins", "*.dll"))
+            {
+                try
+                {
+                    Assembly assembly = System.Reflection.Assembly.LoadFrom(path);
+                    Type[] types = assembly.GetTypes();
+                    Type plugin = null;
+                    bool moreThanOnePlugin = false;
+                    foreach (Type type in types)
+                    {
+                        if (type.GetInterface("RPNCalculator.IPlugin") == null)
+                            continue;
+                        if (plugin != null)
+                        {
+                            moreThanOnePlugin = true;
+                            break;
+                        }
+                        plugin = type;
+                    }
+                    if (moreThanOnePlugin)
+                    {
+                        System.Windows.Forms.MessageBox.Show(String.Format("Plugin {0} contains more than one plugin core class. Skipping.", path));
+                        continue;
+                    }
+                    if (plugin == null)
+                    {
+                        System.Windows.Forms.MessageBox.Show(String.Format("Plugin {0} does not contain a core plugin class. Skipping.", path));
+                        continue;
+                    }
+                    MethodInfo loader = plugin.GetMethod("LoadFunctions");
+                    
+                    ConstructorInfo constructor = plugin.GetConstructor(new Type[0]);
+                    IPlugin pluginInstance = (IPlugin)constructor.Invoke(new object[0]);
+                    loader.Invoke(pluginInstance, new object[1] { dict });
+                }
+                catch (Exception e)
+                {
+                    System.Windows.Forms.MessageBox.Show("Loading plugin \"" + path + "\" failed.\n\n" + e.ToString());
+                    continue;
+                }
+            }
 
             return dict;
         }
