@@ -95,7 +95,8 @@ namespace RPNCalculator
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Windows.Forms.MessageBox.Show(
-                "RPN Calculator\n\n" +
+                "RPN Calculator\n" +
+                "Preview 1\n\n" +
                 
                 "Copyright (C) 2013 Bartosz kaźmierczak\n\n" +
                 
