@@ -96,9 +96,9 @@ namespace RPNCalculator
         {
             System.Windows.Forms.MessageBox.Show(
                 "RPN Calculator\n" +
-                "Preview 1\n\n" +
+                //"Preview 1\n\n" +
                 
-                "Copyright (C) 2013 Bartosz kaźmierczak\n\n" +
+                "Copyright (C) 2013 Bartosz Kaźmierczak\n\n" +
                 
                 "This program is free software; you can redistribute it and/or modify\n" +
                 "it under the terms of the GNU General Public License as published by\n" +
