@@ -33,6 +33,9 @@ namespace RPNCalculator
     static class RPNEvaluator
     {
         private static Dictionary<String, Function> functions = ListFunctions();
+        private static Dictionary<String, IVariable> variables = ListVariables();
+
+        public static readonly Variable x = new Variable(Double.NaN);
 
         public static void Evaluate(String expression, Stack<double> stack)
         {
@@ -46,13 +49,9 @@ namespace RPNCalculator
                 {
                     stack.Push(num);
                 }
-                else if (part == "e")
+                else if (variables.ContainsKey(part))
                 {
-                    stack.Push(Math.E);
-                }
-                else if (part == "pi")
-                {
-                    stack.Push(Math.PI);
+                    stack.Push(variables[part].Value);
                 }
                 else
                 {
@@ -62,6 +61,46 @@ namespace RPNCalculator
                     function(stack);
                 }
             }
+        }
+
+        public static CompiledExpression Compile(String expression)
+        {
+            CompiledExpression exp = new CompiledExpression();
+            if (expression == String.Empty) return exp;
+            String[] parts = expression.Split(' ');
+            foreach (String part in parts)
+            {
+                if (part == String.Empty) continue;
+                double num = 0;
+                if (double.TryParse(part, out num))
+                {
+                    exp.operations.Add(new OperationPush(new Variable(num)));
+                }
+                else if (variables.ContainsKey(part))
+                {
+                    exp.operations.Add(new OperationPush(variables[part]));
+                }
+                else
+                {
+                    Function function = functions[part];
+                    if (function == null)
+                        throw new Exception("Unknown expression \"" + part + "\"");
+                    exp.operations.Add(new OperationFunction(function));
+                }
+            }
+            return exp;
+        }
+
+        private static Dictionary<String, IVariable> ListVariables()
+        {
+            Dictionary<String, IVariable> dict = new Dictionary<String, IVariable>();
+
+            dict.Add("pi", new VariablePi());
+            dict.Add("e", new VariableE());
+
+            dict.Add("x", x);
+
+            return dict;
         }
 
         private static Dictionary<String, Function> ListFunctions()
@@ -94,48 +133,54 @@ namespace RPNCalculator
             dict.Add("swap", new Function(swap));
             dict.Add("pop", new Function(pop));
 
-            foreach (string path in System.IO.Directory.GetFiles("./plugins", "*.dll"))
+            try
             {
-                try
+                foreach (string path in System.IO.Directory.GetFiles("./plugins", "*.dll"))
                 {
-                    Assembly assembly = System.Reflection.Assembly.LoadFrom(path);
-                    Type[] types = assembly.GetTypes();
-                    Type plugin = null;
-                    bool moreThanOnePlugin = false;
-                    foreach (Type type in types)
+                    try
                     {
-                        if (type.GetInterface("RPNCalculator.IPlugin") == null)
-                            continue;
-                        if (plugin != null)
+                        Assembly assembly = System.Reflection.Assembly.LoadFrom(path);
+                        Type[] types = assembly.GetTypes();
+                        Type plugin = null;
+                        bool moreThanOnePlugin = false;
+                        foreach (Type type in types)
                         {
-                            moreThanOnePlugin = true;
-                            break;
+                            if (type.GetInterface("RPNCalculator.IPlugin") == null)
+                                continue;
+                            if (plugin != null)
+                            {
+                                moreThanOnePlugin = true;
+                                break;
+                            }
+                            plugin = type;
                         }
-                        plugin = type;
+                        if (moreThanOnePlugin)
+                        {
+                            System.Windows.Forms.MessageBox.Show(String.Format("Plugin {0} contains more than one plugin core class. Skipping.", path));
+                            continue;
+                        }
+                        if (plugin == null)
+                        {
+                            System.Windows.Forms.MessageBox.Show(String.Format("Plugin {0} does not contain a core plugin class. Skipping.", path));
+                            continue;
+                        }
+                        MethodInfo loader = plugin.GetMethod("LoadFunctions");
+
+                        ConstructorInfo constructor = plugin.GetConstructor(new Type[0]);
+                        IPlugin pluginInstance = (IPlugin)constructor.Invoke(new object[0]);
+                        loader.Invoke(pluginInstance, new object[1] { dict });
                     }
-                    if (moreThanOnePlugin)
+                    catch (Exception e)
                     {
-                        System.Windows.Forms.MessageBox.Show(String.Format("Plugin {0} contains more than one plugin core class. Skipping.", path));
+                        System.Windows.Forms.MessageBox.Show("Loading plugin \"" + path + "\" failed.\n\n" + e.ToString());
                         continue;
                     }
-                    if (plugin == null)
-                    {
-                        System.Windows.Forms.MessageBox.Show(String.Format("Plugin {0} does not contain a core plugin class. Skipping.", path));
-                        continue;
-                    }
-                    MethodInfo loader = plugin.GetMethod("LoadFunctions");
-                    
-                    ConstructorInfo constructor = plugin.GetConstructor(new Type[0]);
-                    IPlugin pluginInstance = (IPlugin)constructor.Invoke(new object[0]);
-                    loader.Invoke(pluginInstance, new object[1] { dict });
-                }
-                catch (Exception e)
-                {
-                    System.Windows.Forms.MessageBox.Show("Loading plugin \"" + path + "\" failed.\n\n" + e.ToString());
-                    continue;
                 }
             }
+            catch (Exception e)
+            {
 
+            }
             return dict;
         }
 

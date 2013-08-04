@@ -58,7 +58,9 @@ namespace RPNCalculator
                 stack.Clear();
             try
             {
-                RPNEvaluator.Evaluate(expression.Text, stack);
+                CompiledExpression exp = RPNEvaluator.Compile(expression.Text);
+                exp.Execute(stack);
+                //RPNEvaluator.Evaluate(expression.Text, stack);
             }
             catch (Exception ex)
             {
