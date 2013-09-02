@@ -51,6 +51,10 @@ namespace RPNCalculator
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearStack = new System.Windows.Forms.ToolStripMenuItem();
+            this.angleUnitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.radianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.degreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.historyList = new System.Windows.Forms.ListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -59,10 +63,7 @@ namespace RPNCalculator
             this.listBox3 = new System.Windows.Forms.ListBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.status = new System.Windows.Forms.ToolStripStatusLabel();
-            this.angleUnitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.radianToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.degreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.plotFunctionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -93,6 +94,7 @@ namespace RPNCalculator
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.modeToolStripMenuItem,
+            this.plotFunctionToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -118,6 +120,40 @@ namespace RPNCalculator
             this.clearStack.Size = new System.Drawing.Size(226, 22);
             this.clearStack.Text = "Clear stack before evaluating";
             this.clearStack.CheckedChanged += new System.EventHandler(this.clearStack_CheckedChanged);
+            // 
+            // angleUnitToolStripMenuItem
+            // 
+            this.angleUnitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.radianToolStripMenuItem,
+            this.degreeToolStripMenuItem});
+            this.angleUnitToolStripMenuItem.Name = "angleUnitToolStripMenuItem";
+            this.angleUnitToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
+            this.angleUnitToolStripMenuItem.Text = "Angle unit";
+            // 
+            // radianToolStripMenuItem
+            // 
+            this.radianToolStripMenuItem.Checked = true;
+            this.radianToolStripMenuItem.CheckOnClick = true;
+            this.radianToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.radianToolStripMenuItem.Name = "radianToolStripMenuItem";
+            this.radianToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.radianToolStripMenuItem.Text = "Radian";
+            this.radianToolStripMenuItem.Click += new System.EventHandler(this.radianToolStripMenuItem_Click);
+            // 
+            // degreeToolStripMenuItem
+            // 
+            this.degreeToolStripMenuItem.CheckOnClick = true;
+            this.degreeToolStripMenuItem.Name = "degreeToolStripMenuItem";
+            this.degreeToolStripMenuItem.Size = new System.Drawing.Size(111, 22);
+            this.degreeToolStripMenuItem.Text = "Degree";
+            this.degreeToolStripMenuItem.Click += new System.EventHandler(this.degreeToolStripMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
+            this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // groupBox1
             // 
@@ -194,41 +230,14 @@ namespace RPNCalculator
             this.status.Size = new System.Drawing.Size(39, 17);
             this.status.Text = "Ready";
             // 
-            // angleUnitToolStripMenuItem
+            // plotFunctionToolStripMenuItem
             // 
-            this.angleUnitToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.radianToolStripMenuItem,
-            this.degreeToolStripMenuItem});
-            this.angleUnitToolStripMenuItem.Name = "angleUnitToolStripMenuItem";
-            this.angleUnitToolStripMenuItem.Size = new System.Drawing.Size(226, 22);
-            this.angleUnitToolStripMenuItem.Text = "Angle unit";
+            this.plotFunctionToolStripMenuItem.Name = "plotFunctionToolStripMenuItem";
+            this.plotFunctionToolStripMenuItem.Size = new System.Drawing.Size(88, 20);
+            this.plotFunctionToolStripMenuItem.Text = "Plot function";
+            this.plotFunctionToolStripMenuItem.Click += new System.EventHandler(this.plotFunctionToolStripMenuItem_Click);
             // 
-            // radianToolStripMenuItem
-            // 
-            this.radianToolStripMenuItem.Checked = true;
-            this.radianToolStripMenuItem.CheckOnClick = true;
-            this.radianToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.radianToolStripMenuItem.Name = "radianToolStripMenuItem";
-            this.radianToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.radianToolStripMenuItem.Text = "Radian";
-            this.radianToolStripMenuItem.Click += new System.EventHandler(this.radianToolStripMenuItem_Click);
-            // 
-            // degreeToolStripMenuItem
-            // 
-            this.degreeToolStripMenuItem.CheckOnClick = true;
-            this.degreeToolStripMenuItem.Name = "degreeToolStripMenuItem";
-            this.degreeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.degreeToolStripMenuItem.Text = "Degree";
-            this.degreeToolStripMenuItem.Click += new System.EventHandler(this.degreeToolStripMenuItem_Click);
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.aboutToolStripMenuItem.Text = "About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -244,7 +253,7 @@ namespace RPNCalculator
             this.MainMenuStrip = this.menuStrip1;
             this.MaximumSize = new System.Drawing.Size(471, 390);
             this.MinimumSize = new System.Drawing.Size(471, 390);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "RPN Calculator";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.menuStrip1.ResumeLayout(false);
@@ -278,6 +287,7 @@ namespace RPNCalculator
         private System.Windows.Forms.ToolStripMenuItem radianToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem degreeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem plotFunctionToolStripMenuItem;
     }
 }
 

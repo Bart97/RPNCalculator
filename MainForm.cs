@@ -150,5 +150,36 @@ namespace RPNCalculator
                 expression.Text = (String)historyList.Items[historyList.Items.Count - 1 - positionInHistory];
             }
         }
+
+        private void plotFunctionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FunctionPlotter plotter = new FunctionPlotter();
+            Stack<double> functionStack = new Stack<double>();
+
+            try
+            {
+                CompiledExpression exp = plotter.expression = RPNEvaluator.Compile(expression.Text);
+                //plotter.expression = exp;
+                
+                for (decimal x = -25; x <= 25; x += (decimal)0.1)
+                {
+                    RPNEvaluator.x.Value = (double)x;
+                    exp.Execute(functionStack);
+                    double y = functionStack.Pop();
+                    if (Double.IsInfinity(y) || Double.IsNaN(y)) continue;
+                    plotter.points.Add((double)x, y);
+                    functionStack.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.GetType().Name + " : " + ex.Message);
+            }
+            foreach (double element in stack)
+            {
+                stackList.Items.Add(element);
+            }
+            plotter.Show();
+        }
     }
 }

@@ -63,6 +63,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompiledExpression.cs" />
+    <Compile Include="FunctionPlotter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FunctionPlotter.Designer.cs">
+      <DependentUpon>FunctionPlotter.cs</DependentUpon>
+    </Compile>
     <Compile Include="VariableE.cs" />
     <Compile Include="IOperation.cs" />
     <Compile Include="IVariable.cs" />
@@ -79,6 +85,9 @@
     <Compile Include="RPNEvaluator.cs" />
     <Compile Include="Variable.cs" />
     <Compile Include="VariablePi.cs" />
+    <EmbeddedResource Include="FunctionPlotter.resx">
+      <DependentUpon>FunctionPlotter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

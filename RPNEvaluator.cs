@@ -32,10 +32,11 @@ namespace RPNCalculator
     }
     static class RPNEvaluator
     {
+        public static readonly Variable x = new Variable(Double.NaN);
         private static Dictionary<String, Function> functions = ListFunctions();
         private static Dictionary<String, IVariable> variables = ListVariables();
 
-        public static readonly Variable x = new Variable(Double.NaN);
+        
 
         public static void Evaluate(String expression, Stack<double> stack)
         {
