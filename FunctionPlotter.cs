@@ -29,10 +29,9 @@ namespace RPNCalculator
         private void FunctionPlotter_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
-            g.DrawLine(Pens.Black, new Point(250, 0), new Point(250, 500));
-            g.DrawLine(Pens.Black, new Point(0, 250), new Point(500, 250));
+            e.Graphics.Clear(BackColor);
 
-            DrawScale(g);
+            DrawAxes(g);
             Point[] pointArray = new Point[points.Count];
             byte[] types = new byte[points.Count];
             int i = 0;
@@ -42,8 +41,8 @@ namespace RPNCalculator
 
             foreach (KeyValuePair<double, double> point in points)
             {
-                int x = (int)Math.Round(250 + (10 * point.Key));
-                int y = (int)Math.Round(250 - (10 * point.Value));
+                int x = (int)Math.Round(ClientSize.Width / 2 + (10 * point.Key));
+                int y = (int)Math.Round(ClientSize.Height / 2 - (10 * point.Value));
                 if (lastx != -1 && lasty != -1)
                 {
                     int distanceSquare = (int)(Math.Pow(x - lastx, 2) + Math.Pow(y - lasty, 2));
@@ -54,9 +53,10 @@ namespace RPNCalculator
                         RPNEvaluator.x.Value = nextX;
                         expression.Execute(functionStack);
                         double nextY = functionStack.Pop();
-                        int drawX = (int)Math.Round(250 + (10 * nextX));
-                        int drawY = (int)Math.Round(250 - (10 * nextY));
-                        g.FillRectangle(Brushes.Blue, drawX, drawY, 1, 1);
+                        int drawX = (int)Math.Round(ClientSize.Width / 2 + (10 * nextX));
+                        int drawY = (int)Math.Round(ClientSize.Height / 2 - (10 * nextY));
+                        if (drawX > 0 && drawY > 0)
+                            g.FillRectangle(Brushes.Blue, drawX, drawY, 1, 1);
                         distanceSquare = (int)(Math.Pow(drawX - lastx, 2) + Math.Pow(drawY - lasty, 2));
 
                     }
@@ -74,13 +74,26 @@ namespace RPNCalculator
             //g.DrawPath(Pens.Black, path);
         }
 
-        private void DrawScale(Graphics g)
+        private void DrawAxes(Graphics g)
         {
-            for (int i = 0; i < 500; i += 10)
+            g.DrawLine(Pens.Black, new Point(ClientSize.Width / 2, 0), new Point(ClientSize.Width / 2, ClientSize.Height));
+            g.DrawLine(Pens.Black, new Point(0, ClientSize.Height / 2), new Point(ClientSize.Width, ClientSize.Height / 2));
+
+            for (int i = 0; i < ClientSize.Height / 2; i += 10)
             {
-                g.DrawLine(Pens.Black, new Point(248, i), new Point(252, i));
-                g.DrawLine(Pens.Black, new Point(i, 248), new Point(i, 252));
+                g.DrawLine(Pens.Black, new Point(ClientSize.Width / 2 - 2, ClientSize.Height / 2 + i), new Point(ClientSize.Width / 2 + 2, ClientSize.Height / 2 + i));
+                g.DrawLine(Pens.Black, new Point(ClientSize.Width / 2 - 2, ClientSize.Height / 2 - i), new Point(ClientSize.Width / 2 + 2, ClientSize.Height / 2 - i));
             }
+            for (int i = 0; i < ClientSize.Width / 2; i += 10)
+            {
+                g.DrawLine(Pens.Black, new Point(ClientSize.Width / 2 + i, ClientSize.Height / 2 - 2), new Point(ClientSize.Width / 2 + i, ClientSize.Height / 2 + 2));
+                g.DrawLine(Pens.Black, new Point(ClientSize.Width / 2 - i, ClientSize.Height / 2 - 2), new Point(ClientSize.Width / 2 - i, ClientSize.Height / 2 + 2));
+            }
+        }
+
+        private void FunctionPlotter_ClientSizeChanged(object sender, EventArgs e)
+        {
+            Invalidate();
         }
     }
 }

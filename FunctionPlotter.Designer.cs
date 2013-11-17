@@ -38,6 +38,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "FunctionPlotter";
             this.Text = "FunctionPlotter";
+            this.ClientSizeChanged += new System.EventHandler(this.FunctionPlotter_ClientSizeChanged);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FunctionPlotter_Paint);
             this.ResumeLayout(false);
 

@@ -163,12 +163,20 @@ namespace RPNCalculator
                 
                 for (decimal x = -25; x <= 25; x += (decimal)0.1)
                 {
-                    RPNEvaluator.x.Value = (double)x;
-                    exp.Execute(functionStack);
-                    double y = functionStack.Pop();
-                    if (Double.IsInfinity(y) || Double.IsNaN(y)) continue;
-                    plotter.points.Add((double)x, y);
-                    functionStack.Clear();
+                    try
+                    {
+                        RPNEvaluator.x.Value = (double)x;
+                        exp.Execute(functionStack);
+                        double y = functionStack.Pop();
+                        if (Double.IsInfinity(y) || Double.IsNaN(y)) continue;
+                        plotter.points.Add((double)x, y);
+                    }
+                    catch (Exception ex)
+                    { }
+                    finally
+                    {
+                        functionStack.Clear();
+                    }
                 }
             }
             catch (Exception ex)
